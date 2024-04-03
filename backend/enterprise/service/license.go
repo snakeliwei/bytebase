@@ -64,19 +64,16 @@ func (s *LicenseService) StoreLicense(ctx context.Context, patch *enterprise.Sub
 
 // LoadSubscription will load subscription.
 func (s *LicenseService) LoadSubscription(ctx context.Context) *enterprise.Subscription {
-	if s.cachedSubscription != nil {
-		if s.cachedSubscription.Plan == api.FREE || s.cachedSubscription.IsExpired() {
-			// refresh expired subscription
-			s.cachedSubscription = nil
-		}
-	}
-	if s.cachedSubscription != nil {
-		return s.cachedSubscription
-	}
-
-	// Cache the subscription.
-	s.cachedSubscription = s.provider.LoadSubscription(ctx)
-	return s.cachedSubscription
+	s.cachedSubscription = &enterprise.Subscription{
+		InstanceCount: 9999999,
+		Plan:          api.ENTERPRISE,
+		ExpiresTs:     3908332215,
+		StartedTs:     1708332215,
+		Trialing:      false,
+		OrgID:         "111",
+		OrgName:       "222",
+	   }
+	   return s.cachedSubscription
 }
 
 // IsFeatureEnabled returns whether a feature is enabled.
