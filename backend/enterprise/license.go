@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/bytebase/bytebase/backend/common"
 	"github.com/bytebase/bytebase/backend/enterprise/plugin"
@@ -44,16 +45,16 @@ func NewLicenseService(mode common.ReleaseMode, store *store.Store) (*LicenseSer
 // If there is no license, we will return a free plan subscription without expiration time.
 // If there is expired license, we will return a free plan subscription with the expiration time of the expired license.
 func (s *LicenseService) LoadSubscription(ctx context.Context) *v1pb.Subscription {
-	state.subscription = &v1pb.Subscription{
+	s.subscription = &v1pb.Subscription{
 		ActiveInstances: 9,
 		Instances:       99999,
 		Seats:           9999,
-		ExpiresTime:     4908332215,
-		Plan:            ENTERPRISE,
+		ExpiresTime:     &timestamppb.Timestamp{Seconds: 4908332215},
+		Plan:            PlanType_ENTERPRISE,
 		Trialing:        false,
 		OrgName:         "Nightingales.Inc",
 	}
-	return state.subscription
+	return s.subscription
 }
 
 // GetEffectivePlan gets the effective plan.
