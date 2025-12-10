@@ -44,7 +44,6 @@ jobs:
           project: ${{ secrets.DEPOT_PROJECT}}
           token: ${{ secrets.DEPOT_TOKEN }}
           file: scripts/Dockerfile
-          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ghcr.io/snakeliwei/bytebase:${{ env.VERSION }}
