@@ -9,10 +9,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   build-release-image:
     runs-on: ubuntu-latest
@@ -20,6 +16,7 @@ jobs:
       contents: read
       id-token: write
       actions: write
+      packages: write
     steps:
       - uses: actions/checkout@v5
       - name: Extract build args
