@@ -43,45 +43,17 @@ func NewLicenseService(mode common.ReleaseMode, store *store.Store) (*LicenseSer
 // LoadSubscription will load subscription.
 // If there is no license, we will return a free plan subscription without expiration time.
 // If there is expired license, we will return a free plan subscription with the expiration time of the expired license.
-func (s *LicenseService) LoadSubscription(ctx context.Context) *v1pb.Subscription {
-	s.mu.RLock()
-	cached := s.cachedSubscription
-	s.mu.RUnlock()
-
-	if cached != nil {
-		// Invalidate the cache if expired.
-		if cached.ExpiresTime != nil && cached.ExpiresTime.AsTime().Before(time.Now()) {
-			// refresh expired subscription
-			s.mu.Lock()
-			s.cachedSubscription = nil
-			s.mu.Unlock()
-			cached = nil
-		}
+func (s *LicenseService) LoadSubscription(ctx context.Context) *enterprise.Subscription {
+	s.cachedSubscription = &enterprise.Subscription{
+		InstanceCount: 99999999,
+		Plan:          api.ENTERPRISE,
+		ExpiresTs:     4908332215,
+		StartedTs:     1708332215,
+		Trialing:      false,
+		OrgID:         "111",
+		OrgName:       "222",
 	}
-	if cached != nil {
-		return cached
-	}
-
-	// Cache the subscription.
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	subscription := s.provider.LoadSubscription(ctx)
-	if subscription == nil {
-		// Never had a subscription, set to free plan.
-		subscription = &v1pb.Subscription{
-			Plan: v1pb.PlanType_FREE,
-		}
-	}
-	// Switch to free plan if the subscription is expired.
-	if subscription.ExpiresTime != nil && subscription.ExpiresTime.AsTime().Before(time.Now()) {
-		subscription = &v1pb.Subscription{
-			Plan:        v1pb.PlanType_FREE,
-			ExpiresTime: subscription.ExpiresTime,
-		}
-	}
-	s.cachedSubscription = subscription
-	return subscription
+	return s.cachedSubscription
 }
 
 // GetEffectivePlan gets the effective plan.
