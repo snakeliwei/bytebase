@@ -46,8 +46,8 @@ func NewLicenseService(mode common.ReleaseMode, store *store.Store) (*LicenseSer
 // If there is expired license, we will return a free plan subscription with the expiration time of the expired license.
 func (s *LicenseService) LoadSubscription(ctx context.Context) *v1pb.Subscription {
 	s.cachedSubscription = &v1pb.Subscription{
-		ActiveInstances: 9,
-		Instances:       99999,
+		ActiveInstances: 9999,
+		Instances:       9999,
 		Seats:           9999,
 		ExpiresTime:     &timestamppb.Timestamp{Seconds: 4922899199},
 		Plan:            v1pb.PlanType_ENTERPRISE,
