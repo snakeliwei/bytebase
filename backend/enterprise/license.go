@@ -43,17 +43,17 @@ func NewLicenseService(mode common.ReleaseMode, store *store.Store) (*LicenseSer
 // LoadSubscription will load subscription.
 // If there is no license, we will return a free plan subscription without expiration time.
 // If there is expired license, we will return a free plan subscription with the expiration time of the expired license.
-func (s *LicenseService) LoadSubscription(ctx context.Context) *enterprise.Subscription {
-	s.cachedSubscription = &enterprise.Subscription{
-		InstanceCount: 99999999,
-		Plan:          api.ENTERPRISE,
-		ExpiresTs:     4908332215,
-		StartedTs:     1708332215,
-		Trialing:      false,
-		OrgID:         "111",
-		OrgName:       "222",
+func (s *LicenseService) LoadSubscription(ctx context.Context) *v1pb.Subscription {
+	state.subscription = &v1pb.Subscription{
+		ActiveInstances: 9,
+		Instances:       99999,
+		Seats:           9999,
+		ExpiresTime:     4908332215,
+		Plan:            ENTERPRISE,
+		Trialing:        false,
+		OrgName:         "Nightingales.Inc",
 	}
-	return s.cachedSubscription
+	return state.subscription
 }
 
 // GetEffectivePlan gets the effective plan.
